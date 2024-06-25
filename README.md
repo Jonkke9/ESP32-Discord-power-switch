@@ -15,5 +15,7 @@ You should also take the ESP32s power from the PC to make sure they have common 
 * Something to test if the pc is on or of
 
 
-### Simple diagram of the the contraption
+### Simple diagram of the contraption
 This diagram was made using [wokwi](https://wokwi.com) 
+
+![](https://github.com/Jonkke9/ESP32-Discord-power-switch/blob/main/Diagram.png)
