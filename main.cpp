@@ -183,7 +183,7 @@ std::pair<String, std::pair<String, String>> get_last_message()
   {
     String payload = http.getString();
 
-    DynamicJsonDocument doc(4096);
+    JsonDocument doc;
     DeserializationError error = deserializeJson(doc, payload);
 
     if (error)
