@@ -12,18 +12,25 @@
 const String WIFI_SSID = "YOUR_SSID";
 const String WIFI_PASSWORD = "YOUR_PASSWORD";
 
+//Discord credentials
 const String BOT_TOKEN = "YOUR_BOT_TOKEN";
 const String CHANNEL_ID = "YOUR_CANNEL_ID";
 const String ADMIN_USER_ID = "YOUR_USER_ID";
 
-// Keeps track of the latest message, so it wil not be reacted to multiple times.
-String lastMessageId = "";
-
+// Ntp server address
+const char* ntpServer = "pool.ntp.org";
+// time offset in seconds for example UTC+2:00 = 2 * 3600 and UTC+0:00 = 0
+const long timeZoneSec = 2 * 3600;
+// amount of time the clock in seconds
+const long dayLightSavingSec = 3600;
 // Length of time between clock syncs (1d)
 const unsigned long CLOCK_SYNC_INTERVAL = 86400000;
+
 // How often http request is sent to discord.
 const unsigned long MESSAGE_CHECK_INTERVAL = 1000;
 
+// Keeps track of the latest message, so it wil not be reacted to multiple times.
+String lastMessageId = "";
 // these are used keep track of the time when clock sync and message request will need to be performed again.
 unsigned long clock_sync_last_time = 0;
 unsigned long message_check_last_time = 0;
@@ -96,27 +103,26 @@ bool status()
 }
 
 /**
+ * @brief prints current time.
+ */
+void printLocalTime()
+{
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+}
+
+/**
  * @brief Synchronizes the system time with an external time source.
- * @note The function assumes that network connectivity is already established and that any necessary
  */
 void sync_time()
 {
-  configTime(0, 0, "pool.ntp.org", "time.nist.gov");
-  Serial.print("\nSyncing time ");
-  time_t now = time(nullptr);
-
-  // wait for time to be greater than 24 hour after the start of the clock to indicate that the the time has been synced
-  while (now < 24 * 3600)
-  {
-    Serial.print(".");
-    delay(500);
-    now = time(nullptr);
-  }
-
-  // saves the clock sync time
-  clock_sync_last_time = millis();
-
-  Serial.println("\nTime synced");
+  Serial.print("Syncing time... ");
+  configTime(timeZoneSec, dayLightSavingSec , ntpServer);
+  printLocalTime();
 }
 
 /**
