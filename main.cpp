@@ -178,9 +178,10 @@ void connect_wifi()
 std::pair<String, std::pair<String, String>> get_last_message()
 {
   std::pair<String, std::pair<String, String>> ret = std::make_pair(String(), std::make_pair(String(), String()));
-  HTTPClient http;
+  
   connect_wifi();
-
+  HTTPClient http;
+  http.setTimeout(5000);
   http.begin("https://discord.com/api/v10/channels/" + CHANNEL_ID + "/messages?limit=1");
   http.addHeader("Authorization", "Bot " + BOT_TOKEN);
   int httpCode = http.GET();
@@ -217,7 +218,6 @@ std::pair<String, std::pair<String, String>> get_last_message()
   }
 
   http.end();
-
   return ret;
 }
 
@@ -231,6 +231,7 @@ void add_reaction(const String &messageId, const String &emoji)
 {
   connect_wifi();
   HTTPClient http;
+  http.setTimeout(5000);
   http.begin("https://discord.com/api/v10/channels/" + CHANNEL_ID + "/messages/" + messageId + "/reactions/" + emoji + "/@me");
   http.addHeader("Authorization", "Bot " + BOT_TOKEN);
   int httpCode = http.sendRequest("PUT", "");
@@ -255,6 +256,7 @@ void message_reply(const String &messageId, const String &channelID, const Strin
   connect_wifi();
 
   HTTPClient http;
+  http.setTimeout(5000);
   String requestUrl = "https://discord.com/api/v10/channels/" + channelID + "/messages";
   String messageData = "{\"content\": \"" + content + "\", \"message_reference\": {\"message_id\": \"" + messageId + "\"}}";
 
@@ -348,7 +350,6 @@ void handle_message()
 // this function is run on startup
 void setup()
 {
-
   Serial.begin(9600);
 
   // Setup pins
