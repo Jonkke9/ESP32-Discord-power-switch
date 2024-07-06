@@ -321,9 +321,14 @@ void handle_message()
       unsigned int i = 0;
       message_reply(lastMessageId, message.second.first, "The server is now powering off.");
       momentary_press();
+      
       // waits for the compute to shut off.
-      while (status() && i < 30)
+      while (status() && i < 30) 
+      {
         delay(1000);
+        i++;
+      }
+      
       // if power is not shut off in 30 seconds the restart process is aborted an the user is notified.
       if (i >= 30)
       {
